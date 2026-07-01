@@ -1,18 +1,9 @@
-# Phần 1:BÁo cáo phân tích:
-# 1.Input của bài toán là gì?: danh sách các đối tượng sinh viên, mỗi đối tượng gồm: id, name, class, và stutus.
-
-# 2.Output mong muốn là gì?: Một đối tượng Json chứa message và data (danh sách các sinh viên có status == "active").
-
-# 3.Điều kiện nào dùng để xác định sinh viên đang học?: Dựa vào trường status của sinh viên có giá trị là "active".
-
-
-# 4.Các bước xử lý API GET /students/active.: 
-# GET /students-active 
-
-# Phần 2: Triển khai code:
 from fastapi import FastAPI
 
-app = FastAPI()
+app = FastAPI(
+    title='App lấy sinh viên',
+    description="Hay quá"
+)
 
 students = [
     {"id": 1, "name": "An", "status": "active"},
@@ -21,17 +12,19 @@ students = [
     {"id": 4, "name": "Dung", "status": "pending"}
 ]
 
-@app.get("/students-active")
-def get_active_students():
-    active_list = [s for s in students if s["status"] == "active"]
-
-    if not active_list:
-        return {
+@app.get("/students/active", tags=['Students'],summary='Danh sách sv lấy dc actice')
+def get_all_std():
+    if not students:
+        return{
             "message": "Không có sinh viên đang học",
             "data": []
         }
-    
-    return {
+    active_std =[]
+    for student in students:
+        if student.get('status') == "active":
+            active_std.append(student)
+            
+    return{
         "message": "Danh sách sinh viên đang học",
-        "data": active_list
+        'data':active_std
     }
